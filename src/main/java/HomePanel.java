@@ -1,43 +1,72 @@
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.*;
 
 public class HomePanel extends JPanel {
     private GameFrame gameFrame;
-    private JTextField nameField;
-    private JComboBox<Integer> levelSelector;
 
     public HomePanel(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
+        this.setLayout(new GridBagLayout()); // Usare GridBagLayout per centrare i componenti
 
-        JLabel nameLabel = new JLabel("Inserisci il tuo nome:");
-        nameField = new JTextField(10);
-        
-        JLabel levelLabel = new JLabel("Seleziona il livello di partenza:");
-        Integer[] levels = {1, 2, 3, 4, 5};
-        levelSelector = new JComboBox<>(levels);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Spaziatura tra i componenti
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
-        JButton startButton = new JButton("Inizia Gioco");
+        JButton startButton = new JButton("Start Game");
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String playerName = nameField.getText().trim();
-                if (playerName.isEmpty()) {
+                String playerName = JOptionPane.showInputDialog("Inserisci il tuo nome:");
+                if (playerName == null || playerName.trim().isEmpty()) {
                     playerName = "Giocatore";
                 }
-                int startLevel = (int) levelSelector.getSelectedItem();
-                gameFrame.startGame(playerName, startLevel);
+                gameFrame.startGame(playerName, 1); // Inizia dal livello 1
             }
         });
 
-        this.add(nameLabel);
-        this.add(nameField);
-        this.add(levelLabel);
-        this.add(levelSelector);
-        this.add(startButton);
+        JButton leaderboardButton = new JButton("Leaderboard");
+        leaderboardButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameFrame.showLeaderboard(); // Mostra la leaderboard
+            }
+        });
+
+        JButton chooseLevelButton = new JButton("Choose Level");
+        chooseLevelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String[] levels = {"1", "2", "3", "4", "5"};
+                String level = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Scegli un livello",
+                        "Choose Level",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        levels,
+                        levels[0]
+                );
+                if (level != null) {
+                    int startLevel = Integer.parseInt(level);
+                    String playerName = JOptionPane.showInputDialog("Inserisci il tuo nome:");
+                    if (playerName == null || playerName.trim().isEmpty()) {
+                        playerName = "Giocatore";
+                    }
+                    gameFrame.startGame(playerName, startLevel); // Inizia dal livello scelto
+                }
+            }
+        });
+
+        gbc.gridy++;
+        this.add(startButton, gbc);
+
+        gbc.gridy++;
+        this.add(leaderboardButton, gbc);
+
+        gbc.gridy++;
+        this.add(chooseLevelButton, gbc);
     }
 }

@@ -24,7 +24,6 @@ The game includes a home screen where you can enter your name, select the starti
 2. **Create the JAR file**:
    ```
    jar cvfm MyGame.jar docs/Manifest.txt -C bin .
-
    ```
 3. **Run the game**:
    ```

@@ -1,9 +1,9 @@
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class GameFrame extends JFrame {
     private GamePanel gamePanel;
@@ -14,18 +14,34 @@ public class GameFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Il mio Gioco in Java");
 
-        homePanel = new HomePanel(this);
-        this.add(homePanel);
+        showHomePanel();
         this.setVisible(true);
+    }
+
+    public void showHomePanel() {
+        if (homePanel == null) {
+            homePanel = new HomePanel(this);
+        } else {
+            this.remove(gamePanel);
+        }
+        this.add(homePanel);
+        this.revalidate();
+        this.repaint();
     }
 
     public void startGame(String playerName, int startLevel) {
         this.remove(homePanel);
-        gamePanel = new GamePanel(playerName, startLevel);
+        gamePanel = new GamePanel(playerName, startLevel, this);
         this.add(gamePanel);
         this.setJMenuBar(createMenuBar());
         this.revalidate();
+
         gamePanel.startGame();
+    }
+
+    public void showLeaderboard() {
+        Leaderboard leaderboard = new Leaderboard();
+        leaderboard.setVisible(true);
     }
 
     private JMenuBar createMenuBar() {
@@ -51,11 +67,6 @@ public class GameFrame extends JFrame {
         menuBar.add(menu);
 
         return menuBar;
-    }
-
-    private void showLeaderboard() {
-        Leaderboard leaderboard = new Leaderboard();
-        leaderboard.setVisible(true);
     }
 
     public static void main(String[] args) {
